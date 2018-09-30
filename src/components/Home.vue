@@ -1,6 +1,7 @@
 <template>
   <div class='home'>
     <h1>connpass新着イベント</h1>
+    <div>東京都</div>
     <ul>
       <li v-for='(item, index) in list' :key='index'>
         <a :href="item.event_url">
@@ -16,7 +17,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+import Vue from 'vue';
+import VueJsonp from 'vue-jsonp';
+Vue.use(VueJsonp);
 
 export default {
   name: 'Home',
@@ -34,7 +38,7 @@ export default {
       // 読み込みカウンター
       start_count: 1,
       // 場所
-      area: ''
+      area: '東京都'
     };
   },
   computed: {
@@ -56,29 +60,24 @@ export default {
       this.start_count += 10;
     },
     getList: function() {
-      console.log('getList');
-      console.log('start_count:', this.start_count);
       let that = this;
       // 新着イベントを取得
-      axios
-        .get('https://connpass.com/api/v1/event/', {
-          params: {
-            order: 3,
-            start: that.start_count,
-            keyword: that.area
-          }
-        })
-        .then(function(response) {
+      this.$jsonp('https://connpass.com/api/v1/event/', {
+        order: 3,
+        start: that.start_count,
+        keyword: that.area
+      })
+        .then(response => {
+          // Success.
           console.log(response);
-          that.results_returned = response.data.results_returned;
-          that.results_available = response.data.results_available;
-          that.results_start = response.data.results_start;
-          that.list = that.list.concat(response.data.events);
-          console.log('response.data.events:', response.data.events);
-          console.log('that.list:', that.list);
+          that.results_returned = response.results_returned;
+          that.results_available = response.results_available;
+          that.results_start = response.results_start;
+          that.list = that.list.concat(response.events);
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch(err => {
+          // Failed.
+          console.log(err);
         });
     },
     updateList: function() {
