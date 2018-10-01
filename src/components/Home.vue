@@ -1,9 +1,9 @@
 <template>
   <div class='home'>
     <h1>connpass新着イベント</h1>
-    <Area v-on:area-event='setArea'/>
+    <div>東京都</div>
     <ul>
-      <li v-for='(item, index) in filterList' :key='index'>
+      <li v-for='(item, index) in list' :key='index'>
         <a :href="item.event_url">
           <h1>{{ setDate(item.started_at) }}</h1>
           <p>{{ item.title }}</p>
@@ -21,13 +21,9 @@
 import Vue from 'vue';
 import VueJsonp from 'vue-jsonp';
 Vue.use(VueJsonp);
-import Area from './Area.vue';
 
 export default {
   name: 'Home',
-  components: {
-    Area
-  },
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -42,7 +38,7 @@ export default {
       // 読み込みカウンター
       start_count: 1,
       // 場所
-      area: ''
+      area: '東京都'
     };
   },
   computed: {
@@ -57,18 +53,9 @@ export default {
         let text = month + date + day + time;
         return text;
       };
-    },
-    filterList: function() {
-      const that = this;
-      return this.list.filter(function(el) {
-        return el.address !== null && el.address.indexOf(that.area) !== -1;
-      }, this);
     }
   },
   methods: {
-    setArea: function(val) {
-      this.area = val;
-    },
     startCounter: function() {
       this.start_count += 10;
     },
@@ -77,7 +64,8 @@ export default {
       // 新着イベントを取得
       this.$jsonp('https://connpass.com/api/v1/event/', {
         order: 3,
-        start: that.start_count
+        start: that.start_count,
+        keyword: that.area
       })
         .then(response => {
           // Success.
@@ -118,7 +106,7 @@ ul {
 }
 ul li {
   color: #404040;
-  border-left: solid 6px #c82a16;
+  border-left: solid 6px #1fa67a;
   border-bottom: solid 2px #dadada;
   background: whitesmoke;
   margin-bottom: 5px;
