@@ -12,7 +12,7 @@
         </a>
       </li>
     </ul>
-    <button type='button' v-on:click='updateList'>さらに読み込む</button>
+    <!-- <button type='button' v-on:click='updateList'>さらに読み込む</button> -->
   </div>
 </template>
 
@@ -100,6 +100,16 @@ export default {
   created: function() {
     console.log('hello');
     this.getList();
+
+    window.onscroll = () => {
+      let scrollTop = document.documentElement.scrollTop;
+      let bottom = scrollTop + document.documentElement.clientHeight;
+      let app = document.getElementById('app');
+      // 一番下まで行ったら読み込み直し
+      if (bottom >= app.clientHeight) {
+        this.updateList();
+      }
+    };
   }
 };
 </script>
@@ -107,9 +117,14 @@ export default {
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
 .home {
-  margin: 10px;
+  padding: 10px;
 }
-h1 {
+.home > h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  padding: 0.67rem 0;
+}
+ul li h1 {
   font-size: 1.3rem;
 }
 ul {
