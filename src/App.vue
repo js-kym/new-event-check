@@ -6,6 +6,7 @@
 
 <script>
 import 'normalize.css';
+import './assets/css/icono.min.css';
 import Home from './components/Home.vue';
 
 export default {
