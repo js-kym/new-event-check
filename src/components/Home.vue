@@ -5,7 +5,7 @@
       <div class="menu"><span class="icono-bookmark"></span></div>
     </div>
     <div id="main">
-      <Area v-on:area-event='setArea'/>
+      <!-- <Area v-on:area-event='setArea'/> -->
       <ul>
         <li v-for='(item, index) in filterList' :key='index'>
             <a :href="item.event_url">
@@ -187,6 +187,7 @@ export default {
 ul {
   padding: 0;
   text-align: left;
+  margin: 0;
 }
 ul li {
   color: #1a1a1a;
