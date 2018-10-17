@@ -1,18 +1,36 @@
 <template>
   <div class='home'>
-    <h1>connpass新着イベント</h1>
-    <Area v-on:area-event='setArea'/>
-    <ul>
-      <li v-for='(item, index) in filterList' :key='index'>
-        <a :href="item.event_url">
-          <h1>{{ setDate(item.started_at) }}</h1>
-          <p>{{ item.title }}</p>
-          <p>{{ item.address }}</p>
-          <p>{{ item.place }}</p>
-        </a>
-      </li>
-    </ul>
-    <!-- <button type='button' v-on:click='updateList'>さらに読み込む</button> -->
+    <div id="tab">
+      <div class="menu active"><img src="../assets/img/connpass_logo_4.png"></div>
+      <div class="menu"><span class="icono-bookmark"></span></div>
+    </div>
+    <div id="main">
+      <Area v-on:area-event='setArea'/>
+      <ul>
+        <li v-for='(item, index) in filterList' :key='index'>
+            <a :href="item.event_url">
+              <div id="infoHeader">
+                <div id="title">{{ item.title }}</div>
+              </div>
+            </a>
+            <div id="infoMain">
+              <div id="info">
+                <p>
+                  <span>{{ setDate(item.started_at) }}</span>
+                  <span>{{ item.accepted + '/' + item.limit }}</span>
+                </p>
+                <p>{{ item.address }}</p>
+                <p>{{ item.place }}</p>
+              </div>
+              <div id="bookmark" @click="toggleBookmark(item.event_id)">
+                <span v-if="bookmarkList.indexOf(item.event_id) !== -1" class="icono-bookmark"></span>
+                <span v-else class="icono-bookmarkEmpty"></span>
+              </div>
+            </div>
+        </li>
+      </ul>
+      <div v-if="loadingFlg" class="loader"></div>
+    </div>
   </div>
 </template>
 
@@ -30,7 +48,6 @@ export default {
   },
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
       // イベントリスト
       list: [],
       // 含まれる検索結果の件数
@@ -42,7 +59,10 @@ export default {
       // 読み込みカウンター
       start_count: 1,
       // 場所
-      area: ''
+      area: '',
+      bookmarkList: [],
+      // データ読み込みフラグ
+      loadingFlg: false
     };
   },
   computed: {
@@ -66,6 +86,15 @@ export default {
     }
   },
   methods: {
+    toggleBookmark: function(id) {
+      if (this.bookmarkList && this.bookmarkList.indexOf(id) !== -1) {
+        // リストにあるので削除
+        this.bookmarkList.splice(this.bookmarkList.indexOf(id), 1);
+      } else {
+        this.bookmarkList.push(id);
+      }
+      localStorage.setItem('bookmarkList', JSON.stringify(this.bookmarkList));
+    },
     setArea: function(val) {
       this.area = val;
     },
@@ -73,24 +102,29 @@ export default {
       this.start_count += 10;
     },
     getList: function() {
-      let that = this;
-      // 新着イベントを取得
-      this.$jsonp('https://connpass.com/api/v1/event/', {
-        order: 3,
-        start: that.start_count
-      })
-        .then(response => {
-          // Success.
-          console.log(response);
-          that.results_returned = response.results_returned;
-          that.results_available = response.results_available;
-          that.results_start = response.results_start;
-          that.list = that.list.concat(response.events);
+      if (!this.loadingFlg) {
+        this.loadingFlg = true;
+        let that = this;
+        // 新着イベントを取得
+        this.$jsonp('https://connpass.com/api/v1/event/', {
+          order: 3,
+          start: that.start_count
         })
-        .catch(err => {
-          // Failed.
-          console.log(err);
-        });
+          .then(response => {
+            // Success.
+            console.log(response);
+            that.results_returned = response.results_returned;
+            that.results_available = response.results_available;
+            that.results_start = response.results_start;
+            that.list = that.list.concat(response.events);
+            that.loadingFlg = false;
+          })
+          .catch(err => {
+            // Failed.
+            console.log(err);
+            that.loadingFlg = false;
+          });
+      }
     },
     updateList: function() {
       this.startCounter();
@@ -98,7 +132,8 @@ export default {
     }
   },
   created: function() {
-    console.log('hello');
+    const list = JSON.parse(localStorage.getItem('bookmarkList'));
+    this.bookmarkList = list ? list : [];
     this.getList();
 
     window.onscroll = () => {
@@ -116,26 +151,48 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-.home {
+#tab {
+  width: 100%;
+  height: 30px;
+  background: #cccccc;
+  text-align: center;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+}
+#tab div {
+  display: inline-block;
+  width: 50%;
+  height: 25px;
+  vertical-align: middle;
+  border-bottom: 5px solid #cccccc;
+}
+#tab div.active {
+  background: #fff;
+  border-bottom: 5px solid #c82a16;
+}
+#tab div span.icono-bookmark {
+  transform: scale(0.7, 0.7);
+  margin-top: 5px;
+  color: #fff;
+}
+#tab div img {
+  height: 20px;
+  padding: 2px;
+}
+#main {
   padding: 10px;
-}
-.home > h1 {
-  font-size: 1.3rem;
-  margin: 0;
-  padding: 0.67rem 0;
-}
-ul li h1 {
-  font-size: 1.3rem;
 }
 ul {
   padding: 0;
   text-align: left;
 }
 ul li {
-  color: #404040;
+  color: #1a1a1a;
   border-left: solid 6px #c82a16;
   border-bottom: solid 2px #dadada;
-  background: whitesmoke;
+  background: #f5f5f5;
   margin-bottom: 5px;
   line-height: 1.5;
   padding: 0.5em;
@@ -144,20 +201,89 @@ ul li {
 ul li a {
   color: #404040;
   display: block;
-  text-decoration: none;
+  /* text-decoration: none; */
 }
-ul li h1 {
-  font-weight: normal;
-  margin: 0;
-  font-size: 1.3rem;
-  /*font-weight: bold;*/
+ul li #infoHeader {
+  font-size: 1rem;
+  font-weight: bolder;
+}
+/* ul li #infoHeader div {
+  display: inline-block;
+  vertical-align: middle;
+}
+ul li #infoHeader div#bookmark {
+  text-align: right;
+  vertical-align: top;
+  width: 15%;
+}
+ul li #infoHeader div#title {
+  line-height: 1.2rem;
+  width: 85%;
+} */
+ul li #infoMain div {
+  display: inline-block;
+  vertical-align: middle;
+}
+ul li #infoMain div#info {
+  width: 90%;
+}
+ul li #infoMain div#bookmark {
+  width: 10%;
+  text-align: center;
+  vertical-align: bottom;
 }
 ul li p {
   margin: 0;
   font-size: 0.8rem;
 }
-ul li p:first-of-type {
-  font-size: 1rem;
-  font-weight: bolder;
+.icono-bookmarkEmpty {
+  margin: 0;
+  color: #c82a16;
+}
+.icono-bookmark {
+  margin: 0;
+  color: #c82a16;
+}
+/* ローディング */
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+}
+.loader {
+  margin: 10px auto;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 3px solid rgba(200, 42, 42, 0.2);
+  border-right: 3px solid rgba(200, 42, 42, 0.2);
+  border-bottom: 3px solid rgba(200, 42, 42, 0.2);
+  border-left: 3px solid #c82a2a;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 </style>
