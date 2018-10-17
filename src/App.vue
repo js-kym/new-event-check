@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <Home msg="Welcome to Your Vue.js App"/>
+    <Header/>
+    <Home/>
   </div>
 </template>
 
 <script>
 import 'normalize.css';
 import './assets/css/icono.min.css';
+import Header from './components/Header.vue';
 import Home from './components/Home.vue';
 
 export default {
   name: 'app',
   components: {
+    Header,
     Home
   }
 };
