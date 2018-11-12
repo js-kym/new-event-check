@@ -137,7 +137,7 @@ export default {
           console.log('bookmarkList:', bookmarkList);
           // ブックマークイベントを取得
           this.$jsonp('https://connpass.com/api/v1/event/', {
-            event_id: bookmarkList,
+            event_id: bookmarkList
           })
             .then(response => {
               console.log('success');
