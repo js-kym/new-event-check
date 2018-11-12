@@ -1,26 +1,8 @@
 # new-event-check
 
-## Project setup
-```
-npm install
-```
+新着イベントSearch
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### フレームワーク
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Vue.js　(vue-cli3を使用)
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
