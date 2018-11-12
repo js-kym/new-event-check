@@ -30,6 +30,7 @@
         </li>
       </ul>
       <div v-if="loadingFlg" class="loader"></div>
+      <div class="btn-read" v-if="!loadingFlg" @click="updateList">さらに読み込む</div>
     </div>
   </div>
 </template>
@@ -120,6 +121,7 @@ export default {
             that.list = that.list.concat(response.events);
             that.loadingFlg = false;
             that.bottomFlg = false;
+            console.log('that.list:', that.list);
           })
           .catch(err => {
             // Failed.
@@ -129,6 +131,7 @@ export default {
       }
     },
     updateList: function() {
+      this.bottomFlg = true;
       this.startCounter();
       this.getList();
     }
@@ -139,16 +142,16 @@ export default {
     this.bookmarkList = list ? list : [];
     this.getList();
 
-    window.onscroll = () => {
-      let scrollTop = document.documentElement.scrollTop;
-      let bottom = scrollTop + document.documentElement.clientHeight;
-      let app = document.getElementById('app');
-      // 一番下に行ったら読み込み直し
-      if (bottom >= app.clientHeight && !this.bottomFlg) {
-        this.bottomFlg = true;
-        this.updateList();
-      }
-    };
+    // window.onscroll = () => {
+    //   let scrollTop = document.documentElement.scrollTop;
+    //   let bottom = scrollTop + document.documentElement.clientHeight;
+    //   let app = document.getElementById('app');
+    //   // 一番下に行ったら読み込み直し
+    //   if (bottom >= app.clientHeight && !this.bottomFlg) {
+    //     this.bottomFlg = true;
+    //     this.updateList();
+    //   }
+    // };
   }
 };
 </script>
@@ -294,5 +297,13 @@ ul li p {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+.btn-read {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #c82a2a;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
 }
 </style>

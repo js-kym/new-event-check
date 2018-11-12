@@ -31,6 +31,7 @@
           </li>
         </ul>
         <div v-if="loadingFlg" class="loader"></div>
+        <div class="btn-read" v-if="!loadingFlg && (bookmarkList.length >= (start_count + 10))" @click="updateList">さらに読み込む</div>
       </div>
       <div v-else>
         <div class="noBookmark">ブックマークはありません。</div>
@@ -90,6 +91,9 @@ export default {
       return this.list.filter(function(el) {
         return el.address !== null && el.address.indexOf(that.area) !== -1;
       }, this);
+    },
+    getBookmarkList: function () {
+      return JSON.parse(localStorage.getItem('bookmarkList'));
     }
   },
   methods: {
@@ -117,19 +121,28 @@ export default {
       this.start_count += 10;
     },
     getList: function() {
+      console.log('getList');
+      console.log('this.loadingFlg:', this.loadingFlg);
       if (!this.loadingFlg) {
         this.loadingFlg = true;
         let that = this;
         // ローカルストレージからブックマークイベントを取得
-        const tmpList = JSON.parse(localStorage.getItem('bookmarkList'));
+        let tmpList = JSON.parse(localStorage.getItem('bookmarkList'));
         if (tmpList && tmpList.length > 0) {
-          const bookmarkList = tmpList.join(',');
+          // 10件ずつ分割
+          console.log('this.start_count:', this.start_count);
+          let tmpListSplit = tmpList.slice( this.start_count - 1, this.start_count + 9 );
+          console.log('tmpListSplit:', tmpListSplit);
+          let bookmarkList = tmpListSplit.join(',');
+          console.log('bookmarkList:', bookmarkList);
           // ブックマークイベントを取得
           this.$jsonp('https://connpass.com/api/v1/event/', {
             event_id: bookmarkList,
-            start: that.start_count
           })
             .then(response => {
+              console.log('success');
+              console.log('that.list:', that.list);
+              console.log('response.events:', response.events);
               // Success.
               that.results_returned = response.results_returned;
               that.results_available = response.results_available;
@@ -139,6 +152,7 @@ export default {
               that.bottomFlg = false;
             })
             .catch(err => {
+              console.log('fail');
               // Failed.
               that.loadingFlg = false;
               that.bottomFlg = false;
@@ -147,6 +161,8 @@ export default {
       }
     },
     updateList: function() {
+      console.log('updateList');
+      this.bottomFlg = true;
       this.startCounter();
       this.getList();
     }
@@ -157,16 +173,16 @@ export default {
     this.bookmarkList = list ? list : [];
     this.getList();
 
-    window.onscroll = () => {
-      let scrollTop = document.documentElement.scrollTop;
-      let bottom = scrollTop + document.documentElement.clientHeight;
-      let app = document.getElementById('app');
-      // 一番下に行ったら読み込み直し
-      if (bottom >= app.clientHeight && !this.bottomFlg) {
-        this.bottomFlg = true;
-        this.updateList();
-      }
-    };
+    // window.onscroll = () => {
+    //   let scrollTop = document.documentElement.scrollTop;
+    //   let bottom = scrollTop + document.documentElement.clientHeight;
+    //   let app = document.getElementById('app');
+    //   // 一番下に行ったら読み込み直し
+    //   if (bottom >= app.clientHeight && !this.bottomFlg) {
+    //     this.bottomFlg = true;
+    //     this.updateList();
+    //   }
+    // };
   }
 };
 </script>
@@ -318,5 +334,13 @@ ul li p {
 }
 .noBookmark {
   margin: 10px;
+}
+.btn-read {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #c82a2a;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
 }
 </style>
