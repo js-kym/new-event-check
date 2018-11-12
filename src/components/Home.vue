@@ -2,7 +2,7 @@
   <div class='home'>
     <div id="tab">
       <div class="menu active"><img src="../assets/img/connpass_logo_4.png"></div>
-      <div class="menu"><span class="icono-bookmark"></span></div>
+      <div class="menu"><router-link to="/bookmark"><div><span class="icono-bookmark"></span></div></router-link></div>
     </div>
     <div id="main">
       <!-- <Area v-on:area-event='setArea'/> -->
@@ -62,7 +62,9 @@ export default {
       area: '',
       bookmarkList: [],
       // データ読み込みフラグ
-      loadingFlg: false
+      loadingFlg: false,
+      // 一番下まで行った時のフラグ
+      bottomFlg: false
     };
   },
   computed: {
@@ -118,11 +120,13 @@ export default {
             that.results_start = response.results_start;
             that.list = that.list.concat(response.events);
             that.loadingFlg = false;
+            that.bottomFlg = false;
           })
           .catch(err => {
             // Failed.
             console.log(err);
             that.loadingFlg = false;
+            that.bottomFlg = false;
           });
       }
     },
@@ -132,6 +136,7 @@ export default {
     }
   },
   created: function() {
+    this.start_count = 1;
     const list = JSON.parse(localStorage.getItem('bookmarkList'));
     this.bookmarkList = list ? list : [];
     this.getList();
@@ -140,8 +145,9 @@ export default {
       let scrollTop = document.documentElement.scrollTop;
       let bottom = scrollTop + document.documentElement.clientHeight;
       let app = document.getElementById('app');
-      // 一番下まで行ったら読み込み直し
-      if (bottom >= app.clientHeight) {
+      // 一番下に行ったら読み込み直し
+      if (bottom >= app.clientHeight && !this.bottomFlg) {
+        this.bottomFlg = true;
         this.updateList();
       }
     };
@@ -161,23 +167,28 @@ export default {
   top: 0px;
   z-index: 100;
 }
-#tab div {
+#tab .menu {
   display: inline-block;
   width: 50%;
   height: 25px;
   vertical-align: middle;
   border-bottom: 5px solid #cccccc;
 }
-#tab div.active {
+#tab .menu a {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+#tab .menu.active {
   background: #fff;
   border-bottom: 5px solid #c82a16;
 }
-#tab div span.icono-bookmark {
+#tab .menu span.icono-bookmark {
   transform: scale(0.7, 0.7);
   margin-top: 5px;
   color: #fff;
 }
-#tab div img {
+#tab .menu img {
   height: 20px;
   padding: 2px;
 }
@@ -202,7 +213,6 @@ ul li {
 ul li a {
   color: #404040;
   display: block;
-  /* text-decoration: none; */
 }
 ul li #infoHeader {
   font-size: 1rem;
