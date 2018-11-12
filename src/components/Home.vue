@@ -114,7 +114,6 @@ export default {
         })
           .then(response => {
             // Success.
-            console.log(response);
             that.results_returned = response.results_returned;
             that.results_available = response.results_available;
             that.results_start = response.results_start;
@@ -124,7 +123,6 @@ export default {
           })
           .catch(err => {
             // Failed.
-            console.log(err);
             that.loadingFlg = false;
             that.bottomFlg = false;
           });
