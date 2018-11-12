@@ -6,30 +6,35 @@
     </div>
     <div id="main">
       <!-- <Area v-on:area-event='setArea'/> -->
-      <ul>
-        <li v-for='(item, index) in filterList' :key='index'>
-            <a :href="item.event_url">
-              <div id="infoHeader">
-                <div id="title">{{ item.title }}</div>
+      <div v-if="filterList && filterList.length > 0">
+        <ul>
+          <li v-for='(item, index) in filterList' :key='index'>
+              <a :href="item.event_url">
+                <div id="infoHeader">
+                  <div id="title">{{ item.title }}</div>
+                </div>
+              </a>
+              <div id="infoMain">
+                <div id="info">
+                  <p>
+                    <span>{{ setDate(item.started_at) }}</span>
+                    <span>{{ item.accepted + '/' + item.limit }}</span>
+                  </p>
+                  <p>{{ item.address }}</p>
+                  <p>{{ item.place }}</p>
+                </div>
+                <div id="bookmark" @click="toggleBookmark(item.event_id)">
+                  <span v-if="bookmarkList.indexOf(item.event_id) !== -1" class="icono-bookmark"></span>
+                  <span v-else class="icono-bookmarkEmpty"></span>
+                </div>
               </div>
-            </a>
-            <div id="infoMain">
-              <div id="info">
-                <p>
-                  <span>{{ setDate(item.started_at) }}</span>
-                  <span>{{ item.accepted + '/' + item.limit }}</span>
-                </p>
-                <p>{{ item.address }}</p>
-                <p>{{ item.place }}</p>
-              </div>
-              <div id="bookmark" @click="toggleBookmark(item.event_id)">
-                <span v-if="bookmarkList.indexOf(item.event_id) !== -1" class="icono-bookmark"></span>
-                <span v-else class="icono-bookmarkEmpty"></span>
-              </div>
-            </div>
-        </li>
-      </ul>
-      <div v-if="loadingFlg" class="loader"></div>
+          </li>
+        </ul>
+        <div v-if="loadingFlg" class="loader"></div>
+      </div>
+      <div v-else>
+        <div class="noBookmark">ブックマークはありません。</div>
+      </div>
     </div>
   </div>
 </template>
@@ -89,7 +94,6 @@ export default {
   },
   methods: {
     toggleBookmark: function(id) {
-      console.log('that.list:', this.list);
       if (this.bookmarkList && this.bookmarkList.indexOf(id) !== -1) {
         // リストにあるので削除
         this.bookmarkList.splice(this.bookmarkList.indexOf(id), 1);
@@ -118,28 +122,28 @@ export default {
         let that = this;
         // ローカルストレージからブックマークイベントを取得
         const tmpList = JSON.parse(localStorage.getItem('bookmarkList'));
-        const bookmarkList = tmpList.join(',');
-        // ブックマークイベントを取得
-        this.$jsonp('https://connpass.com/api/v1/event/', {
-          event_id: bookmarkList,
-          start: that.start_count
-        })
-          .then(response => {
-            // Success.
-            console.log(response);
-            that.results_returned = response.results_returned;
-            that.results_available = response.results_available;
-            that.results_start = response.results_start;
-            that.list = that.list.concat(response.events);
-            that.loadingFlg = false;
-            that.bottomFlg = false;
+        if (tmpList && tmpList.length > 0) {
+          const bookmarkList = tmpList.join(',');
+          // ブックマークイベントを取得
+          this.$jsonp('https://connpass.com/api/v1/event/', {
+            event_id: bookmarkList,
+            start: that.start_count
           })
-          .catch(err => {
-            // Failed.
-            console.log(err);
-            that.loadingFlg = false;
-            that.bottomFlg = false;
-          });
+            .then(response => {
+              // Success.
+              that.results_returned = response.results_returned;
+              that.results_available = response.results_available;
+              that.results_start = response.results_start;
+              that.list = that.list.concat(response.events);
+              that.loadingFlg = false;
+              that.bottomFlg = false;
+            })
+            .catch(err => {
+              // Failed.
+              that.loadingFlg = false;
+              that.bottomFlg = false;
+            });
+        }
       }
     },
     updateList: function() {
@@ -311,5 +315,8 @@ ul li p {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+.noBookmark {
+  margin: 10px;
 }
 </style>
