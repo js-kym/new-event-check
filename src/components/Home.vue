@@ -1,45 +1,55 @@
 <template>
-  <div class='home'>
+  <div class="home">
     <div id="tab">
-      <div class="menu active"><img src="../assets/img/connpass_logo_4.png"></div>
-      <div class="menu"><router-link to="/bookmark"><div><span class="icono-bookmark"></span></div></router-link></div>
+      <div class="menu active">
+        <img src="../assets/img/connpass_logo_4.png" />
+      </div>
+      <div class="menu">
+        <router-link to="/bookmark">
+          <div>
+            <span class="icono-bookmark"></span>
+          </div>
+        </router-link>
+      </div>
     </div>
     <div id="main">
       <!-- <Area v-on:area-event='setArea'/> -->
       <ul>
-        <li v-for='(item, index) in filterList' :key='index'>
-            <a :href="item.event_url">
-              <div id="infoHeader">
-                <div id="title">{{ item.title }}</div>
-              </div>
-            </a>
-            <div id="infoMain">
-              <div id="info">
-                <p>
-                  <span>{{ setDate(item.started_at) }}</span>
-                  <span>{{ item.accepted + '/' + item.limit }}</span>
-                </p>
-                <p>{{ item.address }}</p>
-                <p>{{ item.place }}</p>
-              </div>
-              <div id="bookmark" @click="toggleBookmark(item.event_id)">
-                <span v-if="bookmarkList.indexOf(item.event_id) !== -1" class="icono-bookmark"></span>
-                <span v-else class="icono-bookmarkEmpty"></span>
-              </div>
+        <li v-for="(item, index) in filterList" :key="index">
+          <a :href="item.event_url">
+            <div id="infoHeader">
+              <div id="title">{{ item.title }}</div>
             </div>
+          </a>
+          <div id="infoMain">
+            <div id="info">
+              <p>
+                <span>{{ setDate(item.started_at) }}</span>
+                <span>{{ item.accepted + '/' + item.limit }}</span>
+              </p>
+              <p>{{ item.address }}</p>
+              <p>{{ item.place }}</p>
+            </div>
+            <div id="bookmark" @click="toggleBookmark(item.event_id)">
+              <span
+                v-if="bookmarkList.indexOf(item.event_id) !== -1"
+                class="icono-bookmark"
+              ></span>
+              <span v-else class="icono-bookmarkEmpty"></span>
+            </div>
+          </div>
         </li>
       </ul>
       <div v-if="loadingFlg" class="loader"></div>
-      <div class="btn-read" v-if="!loadingFlg" @click="updateList">さらに読み込む</div>
+      <div class="btn-read" v-if="!loadingFlg" @click="updateList">
+        さらに読み込む
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 // import axios from 'axios';
-import Vue from 'vue';
-import VueJsonp from 'vue-jsonp';
-Vue.use(VueJsonp);
 import Area from './Area.vue';
 
 export default {
@@ -125,6 +135,7 @@ export default {
           })
           .catch(err => {
             // Failed.
+            console.log('err', err);
             that.loadingFlg = false;
             that.bottomFlg = false;
           });

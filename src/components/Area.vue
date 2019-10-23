@@ -1,5 +1,5 @@
 <template>
-  <select name="pref" v-model='val'>
+  <select name="pref" v-model="val">
     <option value="">すべて</option>
     <option value="" disabled>------</option>
     <option value="東京都">東京都</option>
@@ -71,7 +71,3 @@ export default {
   }
 };
 </script>
-
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
-</style>

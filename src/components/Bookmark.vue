@@ -1,37 +1,52 @@
 <template>
-  <div class='home'>
+  <div class="home">
     <div id="tab">
-      <div class="menu"><router-link to="/"><div><img src="../assets/img/connpass_logo_4.png"></div></router-link></div>
+      <div class="menu">
+        <router-link to="/">
+          <div>
+            <img src="../assets/img/connpass_logo_4.png" />
+          </div>
+        </router-link>
+      </div>
       <div class="menu active"><span class="icono-bookmark"></span></div>
     </div>
     <div id="main">
       <!-- <Area v-on:area-event='setArea'/> -->
       <div v-if="filterList && filterList.length > 0">
         <ul>
-          <li v-for='(item, index) in filterList' :key='index'>
-              <a :href="item.event_url">
-                <div id="infoHeader">
-                  <div id="title">{{ item.title }}</div>
-                </div>
-              </a>
-              <div id="infoMain">
-                <div id="info">
-                  <p>
-                    <span>{{ setDate(item.started_at) }}</span>
-                    <span>{{ item.accepted + '/' + item.limit }}</span>
-                  </p>
-                  <p>{{ item.address }}</p>
-                  <p>{{ item.place }}</p>
-                </div>
-                <div id="bookmark" @click="toggleBookmark(item.event_id)">
-                  <span v-if="bookmarkList.indexOf(item.event_id) !== -1" class="icono-bookmark"></span>
-                  <span v-else class="icono-bookmarkEmpty"></span>
-                </div>
+          <li v-for="(item, index) in filterList" :key="index">
+            <a :href="item.event_url">
+              <div id="infoHeader">
+                <div id="title">{{ item.title }}</div>
               </div>
+            </a>
+            <div id="infoMain">
+              <div id="info">
+                <p>
+                  <span>{{ setDate(item.started_at) }}</span>
+                  <span>{{ item.accepted + '/' + item.limit }}</span>
+                </p>
+                <p>{{ item.address }}</p>
+                <p>{{ item.place }}</p>
+              </div>
+              <div id="bookmark" @click="toggleBookmark(item.event_id)">
+                <span
+                  v-if="bookmarkList.indexOf(item.event_id) !== -1"
+                  class="icono-bookmark"
+                ></span>
+                <span v-else class="icono-bookmarkEmpty"></span>
+              </div>
+            </div>
           </li>
         </ul>
         <div v-if="loadingFlg" class="loader"></div>
-        <div class="btn-read" v-if="!loadingFlg && (bookmarkList.length >= (start_count + 10))" @click="updateList">さらに読み込む</div>
+        <div
+          class="btn-read"
+          v-if="!loadingFlg && bookmarkList.length >= start_count + 10"
+          @click="updateList"
+        >
+          さらに読み込む
+        </div>
       </div>
       <div v-else>
         <div class="noBookmark">ブックマークはありません。</div>
@@ -42,9 +57,6 @@
 
 <script>
 // import axios from 'axios';
-import Vue from 'vue';
-import VueJsonp from 'vue-jsonp';
-Vue.use(VueJsonp);
 import Area from './Area.vue';
 
 export default {
@@ -92,7 +104,7 @@ export default {
         return el.address !== null && el.address.indexOf(that.area) !== -1;
       }, this);
     },
-    getBookmarkList: function () {
+    getBookmarkList: function() {
       return JSON.parse(localStorage.getItem('bookmarkList'));
     }
   },
@@ -131,7 +143,10 @@ export default {
         if (tmpList && tmpList.length > 0) {
           // 10件ずつ分割
           console.log('this.start_count:', this.start_count);
-          let tmpListSplit = tmpList.slice( this.start_count - 1, this.start_count + 9 );
+          let tmpListSplit = tmpList.slice(
+            this.start_count - 1,
+            this.start_count + 9
+          );
           console.log('tmpListSplit:', tmpListSplit);
           let bookmarkList = tmpListSplit.join(',');
           console.log('bookmarkList:', bookmarkList);
@@ -152,7 +167,7 @@ export default {
               that.bottomFlg = false;
             })
             .catch(err => {
-              console.log('fail');
+              console.log('fail:', err);
               // Failed.
               that.loadingFlg = false;
               that.bottomFlg = false;
