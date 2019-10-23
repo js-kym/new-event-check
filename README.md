@@ -2,6 +2,9 @@
 
 新着イベントSearch
 
+## node.js
+v10.15.1
+
 ## フレームワーク
 
 Vue.js　(vue-cli3を使用)
