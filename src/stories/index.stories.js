@@ -4,6 +4,18 @@ import { action } from '@storybook/addon-actions'
 import { linkTo } from '@storybook/addon-links'
 
 import MyButton from '../components/MyButton.vue'
+import TabButton from '../components/atoms/TabButton.vue'
+import Tab from '../components/molecules/Tab.vue'
+
+storiesOf('TabButton', module).add('with text', () => ({
+  components: { TabButton },
+  template: '<tab-button></tab-button>'
+}))
+
+storiesOf('Tab', module).add('Tab', () => ({
+  components: { Tab },
+  template: '<tab></tab>'
+}))
 
 storiesOf('Button', module)
   .add('with text', () => ({
