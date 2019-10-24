@@ -57,7 +57,7 @@
 
 <script>
 // import axios from 'axios';
-import Area from './Area.vue';
+import Area from './Area.vue'
 
 export default {
   name: 'Home',
@@ -83,110 +83,110 @@ export default {
       loadingFlg: false,
       // 一番下まで行った時のフラグ
       bottomFlg: false
-    };
+    }
   },
   computed: {
     setDate: function() {
       return function(started_at) {
-        let d = new Date(started_at);
-        let month = Number(d.getMonth()) + 1;
-        let date = '/' + d.getDate();
-        let WeekChars = ['日', '月', '火', '水', '木', '金', '土'];
-        let day = '(' + WeekChars[d.getDay()] + ')';
-        let time = ' ' + d.getHours() + ':' + ('00' + d.getMinutes()).slice(-2);
-        let text = month + date + day + time;
-        return text;
-      };
+        let d = new Date(started_at)
+        let month = Number(d.getMonth()) + 1
+        let date = '/' + d.getDate()
+        let WeekChars = ['日', '月', '火', '水', '木', '金', '土']
+        let day = '(' + WeekChars[d.getDay()] + ')'
+        let time = ' ' + d.getHours() + ':' + ('00' + d.getMinutes()).slice(-2)
+        let text = month + date + day + time
+        return text
+      }
     },
     filterList: function() {
-      const that = this;
+      const that = this
       return this.list.filter(function(el) {
-        return el.address !== null && el.address.indexOf(that.area) !== -1;
-      }, this);
+        return el.address !== null && el.address.indexOf(that.area) !== -1
+      }, this)
     },
     getBookmarkList: function() {
-      return JSON.parse(localStorage.getItem('bookmarkList'));
+      return JSON.parse(localStorage.getItem('bookmarkList'))
     }
   },
   methods: {
     toggleBookmark: function(id) {
       if (this.bookmarkList && this.bookmarkList.indexOf(id) !== -1) {
         // リストにあるので削除
-        this.bookmarkList.splice(this.bookmarkList.indexOf(id), 1);
+        this.bookmarkList.splice(this.bookmarkList.indexOf(id), 1)
         // 表示からも削除
-        let removeIndex = 0;
+        let removeIndex = 0
         this.list.forEach(function(item, index) {
           if (item.event_id === id) {
-            removeIndex = index;
+            removeIndex = index
           }
-        });
-        this.list.splice(removeIndex, 1);
+        })
+        this.list.splice(removeIndex, 1)
       } else {
-        this.bookmarkList.push(id);
+        this.bookmarkList.push(id)
       }
-      localStorage.setItem('bookmarkList', JSON.stringify(this.bookmarkList));
+      localStorage.setItem('bookmarkList', JSON.stringify(this.bookmarkList))
     },
     setArea: function(val) {
-      this.area = val;
+      this.area = val
     },
     startCounter: function() {
-      this.start_count += 10;
+      this.start_count += 10
     },
     getList: function() {
-      console.log('getList');
-      console.log('this.loadingFlg:', this.loadingFlg);
+      console.log('getList')
+      console.log('this.loadingFlg:', this.loadingFlg)
       if (!this.loadingFlg) {
-        this.loadingFlg = true;
-        let that = this;
+        this.loadingFlg = true
+        let that = this
         // ローカルストレージからブックマークイベントを取得
-        let tmpList = JSON.parse(localStorage.getItem('bookmarkList'));
+        let tmpList = JSON.parse(localStorage.getItem('bookmarkList'))
         if (tmpList && tmpList.length > 0) {
           // 10件ずつ分割
-          console.log('this.start_count:', this.start_count);
+          console.log('this.start_count:', this.start_count)
           let tmpListSplit = tmpList.slice(
             this.start_count - 1,
             this.start_count + 9
-          );
-          console.log('tmpListSplit:', tmpListSplit);
-          let bookmarkList = tmpListSplit.join(',');
-          console.log('bookmarkList:', bookmarkList);
+          )
+          console.log('tmpListSplit:', tmpListSplit)
+          let bookmarkList = tmpListSplit.join(',')
+          console.log('bookmarkList:', bookmarkList)
           // ブックマークイベントを取得
           this.$jsonp('https://connpass.com/api/v1/event/', {
             event_id: bookmarkList
           })
             .then(response => {
-              console.log('success');
-              console.log('that.list:', that.list);
-              console.log('response.events:', response.events);
+              console.log('success')
+              console.log('that.list:', that.list)
+              console.log('response.events:', response.events)
               // Success.
-              that.results_returned = response.results_returned;
-              that.results_available = response.results_available;
-              that.results_start = response.results_start;
-              that.list = that.list.concat(response.events);
-              that.loadingFlg = false;
-              that.bottomFlg = false;
+              that.results_returned = response.results_returned
+              that.results_available = response.results_available
+              that.results_start = response.results_start
+              that.list = that.list.concat(response.events)
+              that.loadingFlg = false
+              that.bottomFlg = false
             })
             .catch(err => {
-              console.log('fail:', err);
+              console.log('fail:', err)
               // Failed.
-              that.loadingFlg = false;
-              that.bottomFlg = false;
-            });
+              that.loadingFlg = false
+              that.bottomFlg = false
+            })
         }
       }
     },
     updateList: function() {
-      console.log('updateList');
-      this.bottomFlg = true;
-      this.startCounter();
-      this.getList();
+      console.log('updateList')
+      this.bottomFlg = true
+      this.startCounter()
+      this.getList()
     }
   },
   created: function() {
-    this.start_count = 1;
-    const list = JSON.parse(localStorage.getItem('bookmarkList'));
-    this.bookmarkList = list ? list : [];
-    this.getList();
+    this.start_count = 1
+    const list = JSON.parse(localStorage.getItem('bookmarkList'))
+    this.bookmarkList = list ? list : []
+    this.getList()
 
     // window.onscroll = () => {
     //   let scrollTop = document.documentElement.scrollTop;
@@ -199,7 +199,7 @@ export default {
     //   }
     // };
   }
-};
+}
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
-import { linkTo } from '@storybook/addon-links';
+import { storiesOf } from '@storybook/vue'
+import { action } from '@storybook/addon-actions'
+import { linkTo } from '@storybook/addon-links'
 
-import MyButton from '../components/MyButton.vue';
+import MyButton from '../components/MyButton.vue'
 
 storiesOf('Button', module)
   .add('with text', () => ({
@@ -14,7 +14,7 @@ storiesOf('Button', module)
   .add('with JSX', () => ({
     components: { MyButton },
     render() {
-      return <my-button onClick={this.action}>With JSX</my-button>;
+      return <my-button onClick={this.action}>With JSX</my-button>
     },
     methods: { action: linkTo('Button', 'with some emoji') }
   }))
@@ -22,4 +22,4 @@ storiesOf('Button', module)
     components: { MyButton },
     template: '<my-button @click="action">😀 😎 👍 💯</my-button>',
     methods: { action: action('clicked') }
-  }));
+  }))

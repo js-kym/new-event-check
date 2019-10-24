@@ -11,11 +11,11 @@ module.exports = {
       'error',
       {
         singleQuote: true,
-        semi: true
+        semi: false
       }
     ]
   },
   parserOptions: {
     parser: 'babel-eslint'
   }
-};
+}

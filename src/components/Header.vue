@@ -8,9 +8,9 @@
 export default {
   name: 'Header',
   data() {
-    return {};
+    return {}
   }
-};
+}
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->

@@ -59,15 +59,15 @@ export default {
   data() {
     return {
       val: ''
-    };
+    }
   },
   created: function() {
-    console.log('area:', this.val);
+    console.log('area:', this.val)
   },
   watch: {
     val: function() {
-      this.$emit('area-event', this.val);
+      this.$emit('area-event', this.val)
     }
   }
-};
+}
 </script>

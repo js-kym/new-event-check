@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import 'normalize.css';
-import '@/assets/css/icono.min.css';
-import Header from '@/components/Header.vue';
-import Home from '@/components/Home.vue';
+import 'normalize.css'
+import '@/assets/css/icono.min.css'
+import Header from '@/components/Header.vue'
+import Home from '@/components/Home.vue'
 
 export default {
   name: 'app',
@@ -19,7 +19,7 @@ export default {
     Header,
     Home
   }
-};
+}
 </script>
 
 <style>
