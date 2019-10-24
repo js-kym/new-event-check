@@ -1,17 +1,6 @@
 <template>
   <div class="home">
-    <div id="tab">
-      <div class="menu active">
-        <img src="../assets/img/connpass_logo_4.png" />
-      </div>
-      <div class="menu">
-        <router-link to="/bookmark">
-          <div>
-            <span class="icono-bookmark"></span>
-          </div>
-        </router-link>
-      </div>
-    </div>
+    <tab></tab>
     <div id="main">
       <!-- <Area v-on:area-event='setArea'/> -->
       <ul>
@@ -51,11 +40,13 @@
 <script>
 // import axios from 'axios';
 import Area from './Area.vue'
+import Tab from '@/components/molecules/Tab'
 
 export default {
   name: 'Home',
   components: {
-    Area
+    Area,
+    Tab
   },
   data() {
     return {

@@ -4,7 +4,7 @@
       <div class="menu">
         <router-link to="/">
           <div>
-            <img src="../assets/img/connpass_logo_4.png" />
+            <img src="../assets/img/connpass.png" />
           </div>
         </router-link>
       </div>
