@@ -9,9 +9,9 @@
 
 <script>
 import 'normalize.css';
-import './assets/css/icono.min.css';
-import Header from './components/Header.vue';
-import Home from './components/Home.vue';
+import '@/assets/css/icono.min.css';
+import Header from '@/components/Header.vue';
+import Home from '@/components/Home.vue';
 
 export default {
   name: 'app',
