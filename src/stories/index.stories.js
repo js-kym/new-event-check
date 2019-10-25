@@ -4,8 +4,26 @@ import { action } from '@storybook/addon-actions'
 import { linkTo } from '@storybook/addon-links'
 
 import MyButton from '../components/MyButton.vue'
+import IconBookmark from '../components/atoms/IconBookmark.vue'
+import IconBookmarkEmpty from '../components/atoms/IconBookmarkEmpty.vue'
 import TabButton from '../components/atoms/TabButton.vue'
+import Info from '../components/molecules/Info.vue'
 import Tab from '../components/molecules/Tab.vue'
+
+storiesOf('IconBookmark', module).add('IconBookmark', () => ({
+  components: { IconBookmark },
+  template: '<icon-bookmark></icon-bookmark>'
+}))
+
+storiesOf('IconBookmarkEmpty', module).add('IconBookmarkEmpty', () => ({
+  components: { IconBookmarkEmpty },
+  template: '<icon-bookmark-empty></icon-bookmark-empty>'
+}))
+
+storiesOf('Info', module).add('Info', () => ({
+  components: { Info },
+  template: '<info></info>'
+}))
 
 storiesOf('TabButton', module).add('with text', () => ({
   components: { TabButton },
