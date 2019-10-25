@@ -1,12 +1,12 @@
 <template>
   <div class="tab">
     <tab-button
-      v-for="item in siteList"
+      v-for="item in list"
       :key="item.name"
       :name="item.name"
       :color="item.color"
       :is-active="item.isActive"
-      @click.native="changeActive(item.id)"
+      @click.native="clickEvent(item.id)"
     >
     </tab-button>
   </div>
@@ -14,36 +14,24 @@
 
 <script>
 import TabButton from '@/components/atoms/TabButton'
-// @click="changeActive(item.id)"
+
 export default {
   name: 'Tab',
   components: {
     TabButton
   },
-  data() {
-    return {
-      siteList: [
-        {
-          id: 1,
-          name: 'connpass',
-          color: '#c82a16',
-          isActive: true
-        },
-        {
-          id: 99,
-          name: 'bookmark',
-          color: '#cccccc',
-          isActive: false
-        }
-      ]
+  props: {
+    list: {
+      type: Array,
+      default: function() {
+        return []
+      },
+      required: true
     }
   },
   methods: {
-    changeActive: function(id) {
-      console.log('changeActive:', id)
-      this.siteList.forEach(item => {
-        item.isActive = id === item.id
-      })
+    clickEvent: function(id) {
+      this.$emit('click-event', id)
     }
   }
 }

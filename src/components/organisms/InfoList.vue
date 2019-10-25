@@ -1,9 +1,14 @@
 <template>
-  <ul>
-    <li v-for="(item, index) in list" :key="'list' + index">
-      <info :info="item" />
-    </li>
-  </ul>
+  <div class="info-list">
+    <ul v-if="list.length > 0">
+      <li v-for="(item, index) in list" :key="'list' + index">
+        <info :info="item" />
+      </li>
+    </ul>
+    <div v-else>
+      リストはありません。
+    </div>
+  </div>
 </template>
 
 <script>
@@ -27,12 +32,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-ul {
-  padding: 0;
-  text-align: left;
+.info-list {
   margin: 10px;
-}
-ul li {
-  list-style-type: none !important;
+  ul {
+    padding: 0;
+    text-align: left;
+  }
+  ul li {
+    list-style-type: none !important;
+  }
 }
 </style>

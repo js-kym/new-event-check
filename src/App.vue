@@ -1,10 +1,14 @@
 <template>
   <div id="app">
     <Header />
-    <tab />
+    <tab :list="tabList" @click-event="changeActiveTab" />
     <info-list :list="filterList" />
     <div v-if="loadingFlg" class="loader"></div>
-    <div class="btn-read" v-if="!loadingFlg" @click="updateList">
+    <div
+      class="btn-read"
+      v-if="!loadingFlg && filterList.length > 0"
+      @click="updateList"
+    >
       さらに読み込む
     </div>
   </div>
@@ -42,7 +46,22 @@ export default {
       // データ読み込みフラグ
       loadingFlg: false,
       // 一番下まで行った時のフラグ
-      bottomFlg: false
+      bottomFlg: false,
+      // タブリスト
+      tabList: [
+        {
+          id: 1,
+          name: 'connpass',
+          color: '#c82a16',
+          isActive: true
+        },
+        {
+          id: 99,
+          name: 'bookmark',
+          color: '#cccccc',
+          isActive: false
+        }
+      ]
     }
   },
   computed: {
@@ -89,32 +108,49 @@ export default {
       if (!this.loadingFlg) {
         this.loadingFlg = true
         let that = this
-        // 新着イベントを取得
-        this.$jsonp('https://connpass.com/api/v1/event/', {
-          order: 3,
-          start: that.start_count
+        // isActive=trueのサイトを検索
+        let isActiveSiteObj = this.tabList.find(item => {
+          return item.isActive
         })
-          .then(response => {
-            // Success.
-            that.results_returned = response.results_returned
-            that.results_available = response.results_available
-            that.results_start = response.results_start
-            that.list = that.list.concat(response.events)
-            that.loadingFlg = false
-            that.bottomFlg = false
-            console.log('that.list:', that.list)
+        // ブックマーク以外ならリストを取得
+        if (isActiveSiteObj.id !== 99) {
+          // 新着イベントを取得
+          this.$jsonp('https://connpass.com/api/v1/event/', {
+            order: 3,
+            start: that.start_count
           })
-          .catch(err => {
-            // Failed.
-            console.log('err', err)
-            that.loadingFlg = false
-            that.bottomFlg = false
-          })
+            .then(response => {
+              // Success.
+              that.results_returned = response.results_returned
+              that.results_available = response.results_available
+              that.results_start = response.results_start
+              that.list = that.list.concat(response.events)
+              that.loadingFlg = false
+              that.bottomFlg = false
+              console.log('that.list:', that.list)
+            })
+            .catch(err => {
+              // Failed.
+              console.log('err', err)
+              that.loadingFlg = false
+              that.bottomFlg = false
+            })
+        } else {
+          that.list = []
+          that.loadingFlg = false
+          that.bottomFlg = false
+        }
       }
     },
     updateList: function() {
       this.bottomFlg = true
       this.startCounter()
+      this.getList()
+    },
+    changeActiveTab: function(id) {
+      this.tabList.forEach(item => {
+        item.isActive = id === item.id
+      })
       this.getList()
     }
   },
