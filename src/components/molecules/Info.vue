@@ -1,23 +1,21 @@
 <template>
   <div class="info">
     <div class="info__title">
-      <a href="xxx">
-        <!-- {{ item.title }} -->
-        タイトル
+      <a :href="info.event_url" target="_blank">
+        {{ info.title }}
       </a>
     </div>
     <div class="info__text">
       <div>
         <p>
-          <!-- <span>{{ setDate(item.started_at) }}</span>
-          <span>{{ item.accepted + '/' + item.limit }}</span> -->
-          <span>10/2(水)</span>
-          <span>10/20</span>
+          <span>{{ info.started_at }}</span>
+          <span>
+            {{ info.accepted + (info.limit !== null ? '/' + info.limit : '') }}
+          </span>
+          <span>人</span>
         </p>
-        <!-- <p>{{ item.address }}</p>
-        <p>{{ item.place }}</p> -->
-        <p>東京都練馬区</p>
-        <p>ここねり</p>
+        <p>{{ info.address }}</p>
+        <p>{{ info.place }}</p>
       </div>
     </div>
     <div class="info__bookmark">
@@ -35,6 +33,15 @@ export default {
   components: {
     IconBookmark,
     IconBookmarkEmpty
+  },
+  props: {
+    info: {
+      type: Object,
+      default: function() {
+        return {}
+      },
+      required: true
+    }
   }
 }
 </script>
@@ -45,7 +52,7 @@ export default {
   margin: 0;
   display: grid;
   grid-template-columns: 3fr 1fr;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: auto 3fr;
   color: #1a1a1a;
   border-left: solid 6px #c82a16;
   border-bottom: solid 2px #dadada;
@@ -59,9 +66,11 @@ export default {
     grid-row: 1/2;
     font-size: 1rem;
     font-weight: bolder;
+    margin-bottom: 5px;
+    line-height: 1.3rem;
     a {
       color: #404040;
-      display: block;
+      display: inline-block;
     }
   }
   .info__text {
@@ -72,6 +81,12 @@ export default {
     p {
       margin: 0;
       font-size: 0.8rem;
+      span:first-child {
+        margin-right: 10px;
+      }
+      span:last-child {
+        font-size: 0.6rem;
+      }
     }
   }
   .info__bookmark {
